@@ -20,6 +20,7 @@ struct ContentView: View {
     @State private var showTimeErrorAlert = false
     @State private var dailySleepTimes: [Date] = []
     @State private var dailyWakeTimes: [Date] = []
+    @State private var notificationDates: [Date] = []
 
     var body: some View {
         NavigationView {
@@ -50,9 +51,10 @@ struct ContentView: View {
                     }
                 }
                 
-                NavigationLink(destination: SleepWakeTimesView(dailySleepTimes: $dailySleepTimes, dailyWakeTimes: $dailyWakeTimes)) {
+                NavigationLink(destination: SleepWakeTimesView(dailySleepTimes: $dailySleepTimes, dailyWakeTimes: $dailyWakeTimes, notificationDates: $notificationDates)) {
                     Text("Sleep & Wake Times")
                 }
+
             }
             .navigationBarTitle("Progressive Alarm")
             .alert(isPresented: $showAlert) {
@@ -96,7 +98,7 @@ struct ContentView: View {
     // Function to schedule notifications...
     // Function to schedule notifications
     // Function to schedule notifications and append scheduled dates to dailySleepTimes and dailyWakeTimes arrays
-        private func scheduleNotifications() {
+    private func scheduleNotifications() {
             let calendar = Calendar.current
             
             // Calculate the number of days between start and end dates
@@ -121,6 +123,9 @@ struct ContentView: View {
                 // Append scheduled sleep and wake times to dailySleepTimes and dailyWakeTimes arrays
                 dailySleepTimes.append(sleepTime)
                 dailyWakeTimes.append(wakeTime)
+                
+                // Append notification dates
+                notificationDates.append(notificationDate)
             }
         }
 
@@ -155,20 +160,21 @@ struct ContentView: View {
 struct SleepWakeTimesView: View {
     @Binding var dailySleepTimes: [Date]
     @Binding var dailyWakeTimes: [Date]
+    @Binding var notificationDates: [Date]
 
     var body: some View {
         NavigationView {
             VStack {
                 List {
                     Section(header: Text("Sleep Times")) {
-                        ForEach(dailySleepTimes, id: \.self) { sleepTime in
-                            Text(timeFormatter.string(from: sleepTime))
+                        ForEach(dailySleepTimes.indices, id: \.self) { index in
+                            SleepWakeItemView(date: dailySleepTimes[index], label: "Sleep Time", notificationDate: notificationDates[index])
                         }
                     }
 
                     Section(header: Text("Wake Times")) {
-                        ForEach(dailyWakeTimes, id: \.self) { wakeTime in
-                            Text(timeFormatter.string(from: wakeTime))
+                        ForEach(dailyWakeTimes.indices, id: \.self) { index in
+                            SleepWakeItemView(date: dailyWakeTimes[index], label: "Wake Time", notificationDate: notificationDates[index])
                         }
                     }
                 }
@@ -177,13 +183,41 @@ struct SleepWakeTimesView: View {
             .navigationBarTitle("Sleep & Wake Times")
         }
     }
+    
+    struct SleepWakeItemView: View {
+            var date: Date
+            var label: String
+            var notificationDate: Date
 
-    private let timeFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.timeStyle = .short
-        return formatter
-    }()
+            var body: some View {
+                VStack(alignment: .leading) {
+                    Text(label)
+                        .font(.headline)
+                    HStack {
+                        Text(timeFormatter.string(from: date))
+                            .font(.subheadline)
+                        Spacer()
+                        Text(dateFormatter.string(from: notificationDate))
+                            .font(.subheadline)
+                    }
+                }
+            }
+
+            private let timeFormatter: DateFormatter = {
+                let formatter = DateFormatter()
+                formatter.timeStyle = .short
+                return formatter
+            }()
+
+            private let dateFormatter: DateFormatter = {
+                let formatter = DateFormatter()
+                formatter.dateStyle = .short
+                return formatter
+            }()
+        }
+    
 }
+
 
 
 
