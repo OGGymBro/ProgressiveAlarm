@@ -115,6 +115,11 @@ struct AlarmSetter: View {
             
             // Clear existing notification requests
             UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
+        
+        //clear the Sleep & wake time arrays
+            dailySleepTimes.removeAll()
+            dailyWakeTimes.removeAll()
+            notificationDates.removeAll()
             
             // Schedule notifications for each day of the program
             for i in 0...days {
