@@ -8,19 +8,21 @@
 
 /* Begin PBXBuildFile section */
 		AF6ACB1B2BB4053B002FBB00 /* ProgressiveAlarmApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF6ACB1A2BB4053B002FBB00 /* ProgressiveAlarmApp.swift */; };
-		AF6ACB1D2BB4053B002FBB00 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF6ACB1C2BB4053B002FBB00 /* ContentView.swift */; };
+		AF6ACB1D2BB4053B002FBB00 /* AlarmSetter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF6ACB1C2BB4053B002FBB00 /* AlarmSetter.swift */; };
 		AF6ACB1F2BB4053B002FBB00 /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF6ACB1E2BB4053B002FBB00 /* Item.swift */; };
 		AF6ACB212BB4053C002FBB00 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AF6ACB202BB4053C002FBB00 /* Assets.xcassets */; };
 		AF6ACB242BB4053C002FBB00 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AF6ACB232BB4053C002FBB00 /* Preview Assets.xcassets */; };
+		AF772FCF2BD4493B00CF93CB /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF772FCE2BD4493B00CF93CB /* NotificationManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		AF6ACB172BB4053B002FBB00 /* ProgressiveAlarm.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ProgressiveAlarm.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AF6ACB1A2BB4053B002FBB00 /* ProgressiveAlarmApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressiveAlarmApp.swift; sourceTree = "<group>"; };
-		AF6ACB1C2BB4053B002FBB00 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		AF6ACB1C2BB4053B002FBB00 /* AlarmSetter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlarmSetter.swift; sourceTree = "<group>"; };
 		AF6ACB1E2BB4053B002FBB00 /* Item.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Item.swift; sourceTree = "<group>"; };
 		AF6ACB202BB4053C002FBB00 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		AF6ACB232BB4053C002FBB00 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		AF772FCE2BD4493B00CF93CB /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,8 +56,8 @@
 			isa = PBXGroup;
 			children = (
 				AF6ACB1A2BB4053B002FBB00 /* ProgressiveAlarmApp.swift */,
-				AF6ACB1C2BB4053B002FBB00 /* ContentView.swift */,
-				AF6ACB1E2BB4053B002FBB00 /* Item.swift */,
+				AF6ACB1C2BB4053B002FBB00 /* AlarmSetter.swift */,
+				AF772FCE2BD4493B00CF93CB /* NotificationManager.swift */,
 				AF6ACB202BB4053C002FBB00 /* Assets.xcassets */,
 				AF6ACB222BB4053C002FBB00 /* Preview Content */,
 			);
@@ -65,6 +67,7 @@
 		AF6ACB222BB4053C002FBB00 /* Preview Content */ = {
 			isa = PBXGroup;
 			children = (
+				AF6ACB1E2BB4053B002FBB00 /* Item.swift */,
 				AF6ACB232BB4053C002FBB00 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
@@ -140,8 +143,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AF6ACB1D2BB4053B002FBB00 /* ContentView.swift in Sources */,
+				AF6ACB1D2BB4053B002FBB00 /* AlarmSetter.swift in Sources */,
 				AF6ACB1F2BB4053B002FBB00 /* Item.swift in Sources */,
+				AF772FCF2BD4493B00CF93CB /* NotificationManager.swift in Sources */,
 				AF6ACB1B2BB4053B002FBB00 /* ProgressiveAlarmApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

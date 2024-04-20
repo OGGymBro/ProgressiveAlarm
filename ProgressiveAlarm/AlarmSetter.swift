@@ -9,7 +9,7 @@
 import SwiftUI
 import UserNotifications
 
-struct ContentView: View {
+struct AlarmSetter: View {
     @State private var startDate = Date()
     @State private var endDate = Date()
     @State private var currentSleepTime = Date()
@@ -49,6 +49,11 @@ struct ContentView: View {
                     }) {
                         Text("Done")
                     }
+                    
+                    Button("Grant permission") {
+                        NotificationManager.instance.requestAuthorization()
+                    }
+                    
                 }
                 
                 NavigationLink(destination: SleepWakeTimesView(dailySleepTimes: $dailySleepTimes, dailyWakeTimes: $dailyWakeTimes, notificationDates: $notificationDates)) {
@@ -157,11 +162,14 @@ struct ContentView: View {
 
 }
 
+
+//
 struct SleepWakeTimesView: View {
+    
     @Binding var dailySleepTimes: [Date]
     @Binding var dailyWakeTimes: [Date]
     @Binding var notificationDates: [Date]
-
+    
     var body: some View {
         NavigationView {
             VStack {
@@ -171,7 +179,7 @@ struct SleepWakeTimesView: View {
                             SleepWakeItemView(date: dailySleepTimes[index], label: "Sleep Time", notificationDate: notificationDates[index])
                         }
                     }
-
+                    
                     Section(header: Text("Wake Times")) {
                         ForEach(dailyWakeTimes.indices, id: \.self) { index in
                             SleepWakeItemView(date: dailyWakeTimes[index], label: "Wake Time", notificationDate: notificationDates[index])
@@ -185,43 +193,45 @@ struct SleepWakeTimesView: View {
     }
     
     struct SleepWakeItemView: View {
-            var date: Date
-            var label: String
-            var notificationDate: Date
-
-            var body: some View {
-                VStack(alignment: .leading) {
-                    Text(label)
-                        .font(.headline)
-                    HStack {
-                        Text(timeFormatter.string(from: date))
-                            .font(.subheadline)
-                        Spacer()
-                        Text(dateFormatter.string(from: notificationDate))
-                            .font(.subheadline)
-                    }
+        var date: Date
+        var label: String
+        var notificationDate: Date
+        
+        var body: some View {
+            VStack(alignment: .leading) {
+                Text(label)
+                    .font(.headline)
+                HStack {
+                    Text(timeFormatter.string(from: date))
+                        .font(.subheadline)
+                    Spacer()
+                    Text(dateFormatter.string(from: notificationDate))
+                        .font(.subheadline)
                 }
             }
-
-            private let timeFormatter: DateFormatter = {
-                let formatter = DateFormatter()
-                formatter.timeStyle = .short
-                return formatter
-            }()
-
-            private let dateFormatter: DateFormatter = {
-                let formatter = DateFormatter()
-                formatter.dateStyle = .short
-                return formatter
-            }()
         }
+        
+        private let timeFormatter: DateFormatter = {
+            let formatter = DateFormatter()
+            formatter.timeStyle = .short
+            return formatter
+        }()
+        
+        private let dateFormatter: DateFormatter = {
+            let formatter = DateFormatter()
+            formatter.dateStyle = .short
+            return formatter
+        }()
+    }
     
 }
 
 
+//
+
 
 
 #Preview {
-    ContentView()
+    AlarmSetter()
         .modelContainer(for: Item.self, inMemory: true)
 }
