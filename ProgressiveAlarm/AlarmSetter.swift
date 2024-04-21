@@ -94,7 +94,7 @@ struct ContentView: View {
         
         // Schedule notifications for each day
         var currentDate = startDate
-        for _ in 0...numberOfDays {
+        for _ in 0..<numberOfDays {
             scheduleNotification(for: currentDate, sleepTime: currentSleepTime, wakeTime: currentWakeTime)
             
             // Increment date and times
