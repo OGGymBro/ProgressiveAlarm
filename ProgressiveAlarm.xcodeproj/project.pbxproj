@@ -12,6 +12,8 @@
 		AF6ACB1F2BB4053B002FBB00 /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF6ACB1E2BB4053B002FBB00 /* Item.swift */; };
 		AF6ACB212BB4053C002FBB00 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AF6ACB202BB4053C002FBB00 /* Assets.xcassets */; };
 		AF6ACB242BB4053C002FBB00 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AF6ACB232BB4053C002FBB00 /* Preview Assets.xcassets */; };
+		AFE8DA272BD51BD200E934B0 /* AlarmData.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFE8DA262BD51BD200E934B0 /* AlarmData.swift */; };
+		AFE8DA292BD51BFE00E934B0 /* AlarmsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFE8DA282BD51BFE00E934B0 /* AlarmsView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -21,6 +23,8 @@
 		AF6ACB1E2BB4053B002FBB00 /* Item.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Item.swift; sourceTree = "<group>"; };
 		AF6ACB202BB4053C002FBB00 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		AF6ACB232BB4053C002FBB00 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		AFE8DA262BD51BD200E934B0 /* AlarmData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlarmData.swift; sourceTree = "<group>"; };
+		AFE8DA282BD51BFE00E934B0 /* AlarmsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlarmsView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -55,8 +59,10 @@
 			children = (
 				AF6ACB1A2BB4053B002FBB00 /* ProgressiveAlarmApp.swift */,
 				AF6ACB1C2BB4053B002FBB00 /* AlarmSetter.swift */,
+				AFE8DA282BD51BFE00E934B0 /* AlarmsView.swift */,
 				AF6ACB202BB4053C002FBB00 /* Assets.xcassets */,
 				AF6ACB222BB4053C002FBB00 /* Preview Content */,
+				AFE8DA262BD51BD200E934B0 /* AlarmData.swift */,
 			);
 			path = ProgressiveAlarm;
 			sourceTree = "<group>";
@@ -141,7 +147,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				AF6ACB1D2BB4053B002FBB00 /* AlarmSetter.swift in Sources */,
+				AFE8DA272BD51BD200E934B0 /* AlarmData.swift in Sources */,
 				AF6ACB1F2BB4053B002FBB00 /* Item.swift in Sources */,
+				AFE8DA292BD51BFE00E934B0 /* AlarmsView.swift in Sources */,
 				AF6ACB1B2BB4053B002FBB00 /* ProgressiveAlarmApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

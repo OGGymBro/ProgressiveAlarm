@@ -18,44 +18,63 @@ struct ContentView: View {
     @State private var currentWakeTime = Date()
     @State private var desiredWakeTime = Date()
     
+    // State to track navigation
+        @State private var isShowingAlarms = false
+        @State private var alarms: [AlarmData] = []
+    
     var body: some View {
-        VStack {
-            // Date pickers for start and end dates
-            DatePicker("Start Date", selection: $startDate, displayedComponents: .date)
+        NavigationView {
+            VStack {
+                // Date pickers for start and end dates
+                DatePicker("Start Date", selection: $startDate, displayedComponents: .date)
+                    .padding()
+                
+                DatePicker("End Date", selection: $endDate, displayedComponents: .date)
+                    .padding()
+                
+                // Time pickers for current and desired sleep times
+                DatePicker("Current Sleep Time", selection: $currentSleepTime, displayedComponents: .hourAndMinute)
+                    .padding()
+                
+                DatePicker("Desired Sleep Time", selection: $desiredSleepTime, displayedComponents: .hourAndMinute)
+                    .padding()
+                
+                // Time pickers for current and desired wake times
+                DatePicker("Current Wake Time", selection: $currentWakeTime, displayedComponents: .hourAndMinute)
+                    .padding()
+                
+                DatePicker("Desired Wake Time", selection: $desiredWakeTime, displayedComponents: .hourAndMinute)
+                    .padding()
+                
+                // Button to set progressive alarms
+                Button(action: {
+                    alarms.removeAll()
+                    setProgressiveAlarms()
+                    isShowingAlarms = true 
+                }) {
+                    Text("Set Progressive Alarms")
+                }
                 .padding()
-            
-            DatePicker("End Date", selection: $endDate, displayedComponents: .date)
+                
+                
+                
+                // Button to grant notification permission
+                Button(action: {
+                    requestNotificationPermission()
+                }) {
+                    Text("Grant Permission for Notifications")
+                }
                 .padding()
-            
-            // Time pickers for current and desired sleep times
-            DatePicker("Current Sleep Time", selection: $currentSleepTime, displayedComponents: .hourAndMinute)
-                .padding()
-            
-            DatePicker("Desired Sleep Time", selection: $desiredSleepTime, displayedComponents: .hourAndMinute)
-                .padding()
-            
-            // Time pickers for current and desired wake times
-            DatePicker("Current Wake Time", selection: $currentWakeTime, displayedComponents: .hourAndMinute)
-                .padding()
-            
-            DatePicker("Desired Wake Time", selection: $desiredWakeTime, displayedComponents: .hourAndMinute)
-                .padding()
-            
-            // Button to set progressive alarms
-            Button(action: {
-                setProgressiveAlarms()
-            }) {
-                Text("Set Progressive Alarms")
-            }
-            .padding()
-            
-            // Button to grant notification permission
-            Button(action: {
-                requestNotificationPermission()
-            }) {
-                Text("Grant Permission for Notifications")
-            }
-            .padding()
+                
+                // Button to navigate to AlarmsView
+                NavigationLink(destination: AlarmsView(alarms: alarms),
+                               isActive: $isShowingAlarms) {
+                    EmptyView()
+                }
+                
+                
+                
+            }.navigationTitle("Progressive Alarm")
         }
     }
     
@@ -75,14 +94,22 @@ struct ContentView: View {
         
         // Schedule notifications for each day
         var currentDate = startDate
-        for _ in 0..<numberOfDays {
+        for _ in 0...numberOfDays {
             scheduleNotification(for: currentDate, sleepTime: currentSleepTime, wakeTime: currentWakeTime)
             
             // Increment date and times
             currentDate = calendar.date(byAdding: .day, value: 1, to: currentDate) ?? Date()
             currentSleepTime = calendar.date(byAdding: .minute, value: sleepTimeIncrement, to: currentSleepTime) ?? Date()
             currentWakeTime = calendar.date(byAdding: .minute, value: wakeTimeIncrement, to: currentWakeTime) ?? Date()
+            
+            // Example code to append alarm data
+            alarms.append(AlarmData(date: currentDate,
+                                    sleepTime: currentSleepTime,
+                                    wakeTime: currentWakeTime))
+            
         }
+        
+        
     }
     
     // Helper function to calculate time increment
@@ -170,15 +197,10 @@ struct ContentView: View {
     }
 }
 
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
-    }
-}
 
 
 
 #Preview {
     ContentView()
-        .modelContainer(for: Item.self, inMemory: true)
+        
 }
