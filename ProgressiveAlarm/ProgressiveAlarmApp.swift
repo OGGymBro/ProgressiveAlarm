@@ -25,7 +25,7 @@ struct ProgressiveAlarmApp: App {
 
     var body: some Scene {
         WindowGroup {
-            AlarmSetter()
+            ContentView()
         }
         .modelContainer(sharedModelContainer)
     }

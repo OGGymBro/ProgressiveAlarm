@@ -9,234 +9,176 @@
 import SwiftUI
 import UserNotifications
 
-struct AlarmSetter: View {
+struct ContentView: View {
+    // Properties to store user inputs
     @State private var startDate = Date()
     @State private var endDate = Date()
     @State private var currentSleepTime = Date()
-    @State private var currentWakeTime = Date()
     @State private var desiredSleepTime = Date()
+    @State private var currentWakeTime = Date()
     @State private var desiredWakeTime = Date()
-    @State private var showAlert = false
-    @State private var showTimeErrorAlert = false
-    @State private var dailySleepTimes: [Date] = []
-    @State private var dailyWakeTimes: [Date] = []
-    @State private var notificationDates: [Date] = []
-
+    
     var body: some View {
-        NavigationView {
-            VStack {
-                Form {
-                    Section(header: Text("Program Details")) {
-                        DatePicker("Start Date", selection: $startDate, displayedComponents: .date)
-                        DatePicker("End Date", selection: $endDate, displayedComponents: .date)
-                    }
-                    
-                    Section(header: Text("Current Sleep & Wake Time")) {
-                        DatePicker("Current Sleep Time", selection: $currentSleepTime, displayedComponents: .hourAndMinute)
-                        DatePicker("Current Wake Time", selection: $currentWakeTime, displayedComponents: .hourAndMinute)
-                    }
-                    
-                    Section(header: Text("Desired Sleep & Wake Time")) {
-                        DatePicker("Desired Sleep Time", selection: $desiredSleepTime, displayedComponents: .hourAndMinute)
-                        DatePicker("Desired Wake Time", selection: $desiredWakeTime, displayedComponents: .hourAndMinute)
-                    }
-                    
-                    Button(action: {
-                        // Handle done button action
-                        if checkDays() && checkTimeDifference() {
-                            scheduleNotifications()
-                        }
-                    }) {
-                        Text("Done")
-                    }
-                    
-                    Button("Grant permission") {
-                        NotificationManager.instance.requestAuthorization()
-                    }
-                    
-                }
-                
-                NavigationLink(destination: SleepWakeTimesView(dailySleepTimes: $dailySleepTimes, dailyWakeTimes: $dailyWakeTimes, notificationDates: $notificationDates)) {
-                    Text("Sleep & Wake Times")
-                }
-
+        VStack {
+            // Date pickers for start and end dates
+            DatePicker("Start Date", selection: $startDate, displayedComponents: .date)
+                .padding()
+            
+            DatePicker("End Date", selection: $endDate, displayedComponents: .date)
+                .padding()
+            
+            // Time pickers for current and desired sleep times
+            DatePicker("Current Sleep Time", selection: $currentSleepTime, displayedComponents: .hourAndMinute)
+                .padding()
+            
+            DatePicker("Desired Sleep Time", selection: $desiredSleepTime, displayedComponents: .hourAndMinute)
+                .padding()
+            
+            // Time pickers for current and desired wake times
+            DatePicker("Current Wake Time", selection: $currentWakeTime, displayedComponents: .hourAndMinute)
+                .padding()
+            
+            DatePicker("Desired Wake Time", selection: $desiredWakeTime, displayedComponents: .hourAndMinute)
+                .padding()
+            
+            // Button to set progressive alarms
+            Button(action: {
+                setProgressiveAlarms()
+            }) {
+                Text("Set Progressive Alarms")
             }
-            .navigationBarTitle("Progressive Alarm")
-            .alert(isPresented: $showAlert) {
-                Alert(title: Text("Error"), message: Text("The number of days between the start and end dates must be greater than or equal to 112."), dismissButton: .default(Text("OK")))
+            .padding()
+            
+            // Button to grant notification permission
+            Button(action: {
+                requestNotificationPermission()
+            }) {
+                Text("Grant Permission for Notifications")
             }
-            .alert(isPresented: $showTimeErrorAlert) {
-                Alert(title: Text("Error"), message: Text("The desired sleep and wake times must be at least 6 hours apart."), dismissButton: .default(Text("OK")))
-            }
+            .padding()
         }
     }
     
-    // Function to check if the number of days is >= 112
-    private func checkDays() -> Bool {
+    // Function to set progressive alarms
+    private func setProgressiveAlarms() {
         let calendar = Calendar.current
-        let days = calendar.dateComponents([.day], from: startDate, to: endDate).day ?? 0
-        guard days >= 2 else {
-            showAlert = true
-            return false
+        
+        // Calculate number of days in program
+        let numberOfDays = calendar.dateComponents([.day], from: startDate, to: endDate).day ?? 0
+        
+        // Calculate sleep time and wake time increments
+        let sleepTimeIncrement = calculateIncrement(from: currentSleepTime, to: desiredSleepTime, numberOfDays: numberOfDays)
+        let wakeTimeIncrement = calculateIncrement(from: currentWakeTime, to: desiredWakeTime, numberOfDays: numberOfDays)
+        
+        // Clear existing notifications
+        UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
+        
+        // Schedule notifications for each day
+        var currentDate = startDate
+        for _ in 0..<numberOfDays {
+            scheduleNotification(for: currentDate, sleepTime: currentSleepTime, wakeTime: currentWakeTime)
+            
+            // Increment date and times
+            currentDate = calendar.date(byAdding: .day, value: 1, to: currentDate) ?? Date()
+            currentSleepTime = calendar.date(byAdding: .minute, value: sleepTimeIncrement, to: currentSleepTime) ?? Date()
+            currentWakeTime = calendar.date(byAdding: .minute, value: wakeTimeIncrement, to: currentWakeTime) ?? Date()
         }
-        return true
     }
     
-    // Function to check if desired sleep and wake times are at least 6 hours apart
-    
-    
-    //
-    private func checkTimeDifference() -> Bool {
-//        let calendar = Calendar.current
-//        let components = calendar.dateComponents([.minute], from: desiredSleepTime, to: desiredWakeTime)
-//        
-//        guard let minutesApart = components.minute, minutesApart >= 360 else {
-//            showTimeErrorAlert = true
-//            return false
-//        }
-        
-        return true
+    // Helper function to calculate time increment
+    private func calculateIncrement(from startTime: Date, to endTime: Date, numberOfDays: Int) -> Int {
+        let totalMinutes = Calendar.current.dateComponents([.minute], from: startTime, to: endTime).minute ?? 0
+        return totalMinutes / numberOfDays
     }
-//
-
     
-    // Function to schedule notifications...
-    // Function to schedule notifications
-    // Function to schedule notifications and append scheduled dates to dailySleepTimes and dailyWakeTimes arrays
-    private func scheduleNotifications() {
-            let calendar = Calendar.current
-            
-            // Calculate the number of days between start and end dates
-            let days = calendar.dateComponents([.day], from: startDate, to: endDate).day ?? 0
-            
-            // Calculate the incremental changes for sleep and wake times
-            let sleepTimeIncrement = calculateTimeIncrement(from: currentSleepTime, to: desiredSleepTime, days: days)
-            let wakeTimeIncrement = calculateTimeIncrement(from: currentWakeTime, to: desiredWakeTime, days: days)
-            
-            // Clear existing notification requests
-            UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
-        
-        //clear the Sleep & wake time arrays
-            dailySleepTimes.removeAll()
-            dailyWakeTimes.removeAll()
-            notificationDates.removeAll()
-            
-            // Schedule notifications for each day of the program
-            for i in 0...days {
-                let notificationDate = calendar.date(byAdding: .day, value: i, to: startDate)!
-                let sleepTime = calendar.date(byAdding: .minute, value: sleepTimeIncrement * i, to: currentSleepTime)!
-                let wakeTime = calendar.date(byAdding: .minute, value: wakeTimeIncrement * i, to: currentWakeTime)!
-                
-                scheduleNotification(title: "Sleep Time", body: "Time to sleep!", date: sleepTime)
-                scheduleNotification(title: "Wake Time", body: "Wake up!", date: wakeTime)
-                
-                // Append scheduled sleep and wake times to dailySleepTimes and dailyWakeTimes arrays
-                dailySleepTimes.append(sleepTime)
-                dailyWakeTimes.append(wakeTime)
-                
-                // Append notification dates
-                notificationDates.append(notificationDate)
-            }
-        }
-
-    // Function to calculate time increment per day
-    private func calculateTimeIncrement(from: Date, to: Date, days: Int) -> Int {
+    // Function to schedule notification for a specific date
+    // Function to schedule notification for a specific date
+    private func scheduleNotification(for date: Date, sleepTime: Date, wakeTime: Date) {
         let calendar = Calendar.current
-        let totalMinutes = calendar.dateComponents([.minute], from: from, to: to).minute ?? 0
-        return totalMinutes / days
-    }
-
-    // Function to schedule a single notification
-    private func scheduleNotification(title: String, body: String, date: Date) {
-        let content = UNMutableNotificationContent()
-        content.title = title
-        content.body = body
-        content.sound = UNNotificationSound.default
         
-        let triggerDate = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
-        let trigger = UNCalendarNotificationTrigger(dateMatching: triggerDate, repeats: false)
+        // Set notification content for sleep time
+        let sleepContent = UNMutableNotificationContent()
+        sleepContent.title = "Time to sleep!"
+        sleepContent.body = "It's time to go to bed."
+        sleepContent.sound = UNNotificationSound.default
         
-        let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
+        // Set notification content for wake time
+        let wakeContent = UNMutableNotificationContent()
+        wakeContent.title = "Time to wake up!"
+        wakeContent.body = "It's time to start your day."
+        wakeContent.sound = UNNotificationSound.default
         
-        UNUserNotificationCenter.current().add(request) { (error) in
+        // Calculate notification fire date for sleep time
+        let sleepComponents = calendar.dateComponents([.hour, .minute], from: sleepTime)
+        var sleepNotificationDate = calendar.date(bySettingHour: sleepComponents.hour ?? 0, minute: sleepComponents.minute ?? 0, second: 0, of: date) ?? date
+        if sleepNotificationDate < Date() {
+            sleepNotificationDate = calendar.date(byAdding: .day, value: 1, to: sleepNotificationDate) ?? Date()
+        }
+        
+        // Calculate notification fire date for wake time
+        let wakeComponents = calendar.dateComponents([.hour, .minute], from: wakeTime)
+        let wakeNotificationDate = calendar.date(bySettingHour: wakeComponents.hour ?? 0, minute: wakeComponents.minute ?? 0, second: 0, of: date) ?? date
+        
+        // Create notification trigger for sleep time
+        let sleepTrigger = UNCalendarNotificationTrigger(dateMatching: calendar.dateComponents([.year, .month, .day, .hour, .minute], from: sleepNotificationDate), repeats: false)
+        
+        // Create notification trigger for wake time
+        let wakeTrigger = UNCalendarNotificationTrigger(dateMatching: calendar.dateComponents([.year, .month, .day, .hour, .minute], from: wakeNotificationDate), repeats: false)
+        
+        // Create notification request for sleep time
+        let sleepRequest = UNNotificationRequest(identifier: UUID().uuidString, content: sleepContent, trigger: sleepTrigger)
+        
+        // Create notification request for wake time
+        let wakeRequest = UNNotificationRequest(identifier: UUID().uuidString, content: wakeContent, trigger: wakeTrigger)
+        
+        // Add notification requests to notification center
+        // Add notification requests to notification center
+        UNUserNotificationCenter.current().add(sleepRequest) { error in
             if let error = error {
-                print("Error scheduling notification: \(error.localizedDescription)")
+                print("Error scheduling sleep time notification: \(error.localizedDescription)")
+            } else {
+                let formatter = DateFormatter()
+                formatter.dateFormat = "MMM d, yyyy - HH:mm"
+                let formattedDate = formatter.string(from: sleepNotificationDate)
+                print("Successfully scheduled sleep time notification for \(formattedDate)")
+                print("\n")
+            }
+        }
+        UNUserNotificationCenter.current().add(wakeRequest) { error in
+            if let error = error {
+                print("Error scheduling wake time notification: \(error.localizedDescription)")
+            } else {
+                let formatter = DateFormatter()
+                formatter.dateFormat = "MMM d, yyyy - HH:mm"
+                let formattedDate = formatter.string(from: wakeNotificationDate)
+                print("Successfully scheduled wake time notification for \(formattedDate)")
+            }
+        }
+
+    }
+
+    
+    // Function to request notification permission
+    private func requestNotificationPermission() {
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
+            if granted {
+                print("Notification permission granted")
+            } else if let error = error {
+                print("Error requesting notification permission: \(error.localizedDescription)")
             }
         }
     }
-
 }
 
-
-//
-struct SleepWakeTimesView: View {
-    
-    @Binding var dailySleepTimes: [Date]
-    @Binding var dailyWakeTimes: [Date]
-    @Binding var notificationDates: [Date]
-    
-    var body: some View {
-        NavigationView {
-            VStack {
-                List {
-                    Section(header: Text("Sleep Times")) {
-                        ForEach(dailySleepTimes.indices, id: \.self) { index in
-                            SleepWakeItemView(date: dailySleepTimes[index], label: "Sleep Time", notificationDate: notificationDates[index])
-                        }
-                    }
-                    
-                    Section(header: Text("Wake Times")) {
-                        ForEach(dailyWakeTimes.indices, id: \.self) { index in
-                            SleepWakeItemView(date: dailyWakeTimes[index], label: "Wake Time", notificationDate: notificationDates[index])
-                        }
-                    }
-                }
-                .listStyle(GroupedListStyle())
-            }
-            .navigationBarTitle("Sleep & Wake Times")
-        }
+struct ContentView_Previews: PreviewProvider {
+    static var previews: some View {
+        ContentView()
     }
-    
-    struct SleepWakeItemView: View {
-        var date: Date
-        var label: String
-        var notificationDate: Date
-        
-        var body: some View {
-            VStack(alignment: .leading) {
-                Text(label)
-                    .font(.headline)
-                HStack {
-                    Text(timeFormatter.string(from: date))
-                        .font(.subheadline)
-                    Spacer()
-                    Text(dateFormatter.string(from: notificationDate))
-                        .font(.subheadline)
-                }
-            }
-        }
-        
-        private let timeFormatter: DateFormatter = {
-            let formatter = DateFormatter()
-            formatter.timeStyle = .short
-            return formatter
-        }()
-        
-        private let dateFormatter: DateFormatter = {
-            let formatter = DateFormatter()
-            formatter.dateStyle = .short
-            return formatter
-        }()
-    }
-    
 }
-
-
-//
 
 
 
 #Preview {
-    AlarmSetter()
+    ContentView()
         .modelContainer(for: Item.self, inMemory: true)
 }
