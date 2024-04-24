@@ -60,9 +60,9 @@
 				AF6ACB1A2BB4053B002FBB00 /* ProgressiveAlarmApp.swift */,
 				AF6ACB1C2BB4053B002FBB00 /* AlarmSetter.swift */,
 				AFE8DA282BD51BFE00E934B0 /* AlarmsView.swift */,
+				AFE8DA262BD51BD200E934B0 /* AlarmData.swift */,
 				AF6ACB202BB4053C002FBB00 /* Assets.xcassets */,
 				AF6ACB222BB4053C002FBB00 /* Preview Content */,
-				AFE8DA262BD51BD200E934B0 /* AlarmData.swift */,
 			);
 			path = ProgressiveAlarm;
 			sourceTree = "<group>";
