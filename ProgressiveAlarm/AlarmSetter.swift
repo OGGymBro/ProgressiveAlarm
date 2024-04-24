@@ -30,23 +30,25 @@ struct ContentView: View {
             ScrollView {
                 // Date pickers for start and end dates
                 VStack {
+                    
+                    
                     DatePicker("Start Date", selection: $startDate, displayedComponents: .date)
                         .padding()
-                        .foregroundStyle(.blue)
+                        .foregroundStyle(.cyan)
                         .font(.title2)
                         .fontWeight(.bold)
                     
                     
                     DatePicker("End Date", selection: $endDate, displayedComponents: .date)
                         .padding()
-                        .foregroundStyle(.blue)
+                        .foregroundStyle(.cyan)
                         .font(.title2)
                         .fontWeight(.bold)
                     
                     // Time pickers for current and desired sleep times
                     DatePicker("Current Sleep Time", selection: $currentSleepTime, displayedComponents: .hourAndMinute)
                         .padding()
-                        .foregroundStyle(.red)
+                        .foregroundStyle(.orange)
                         .font(.title2)
                         .fontWeight(.bold)
                     
@@ -59,7 +61,7 @@ struct ContentView: View {
                     // Time pickers for current and desired wake times
                     DatePicker("Current Wake Time", selection: $currentWakeTime, displayedComponents: .hourAndMinute)
                         .padding()
-                        .foregroundStyle(.red)
+                        .foregroundStyle(.orange)
                         .font(.title2)
                         .fontWeight(.bold)
                     
