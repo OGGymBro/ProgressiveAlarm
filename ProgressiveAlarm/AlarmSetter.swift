@@ -18,33 +18,58 @@ struct ContentView: View {
     @State private var currentWakeTime = Date()
     @State private var desiredWakeTime = Date()
     
+    @State private var showAlert = false
+    
+    
     // State to track navigation
         @State private var isShowingAlarms = false
         @State private var alarms: [AlarmData] = []
     
     var body: some View {
         NavigationView {
-            VStack {
+            ScrollView {
                 // Date pickers for start and end dates
-                DatePicker("Start Date", selection: $startDate, displayedComponents: .date)
-                    .padding()
-                
-                DatePicker("End Date", selection: $endDate, displayedComponents: .date)
-                    .padding()
-                
-                // Time pickers for current and desired sleep times
-                DatePicker("Current Sleep Time", selection: $currentSleepTime, displayedComponents: .hourAndMinute)
-                    .padding()
-                
-                DatePicker("Desired Sleep Time", selection: $desiredSleepTime, displayedComponents: .hourAndMinute)
-                    .padding()
-                
-                // Time pickers for current and desired wake times
-                DatePicker("Current Wake Time", selection: $currentWakeTime, displayedComponents: .hourAndMinute)
-                    .padding()
-                
-                DatePicker("Desired Wake Time", selection: $desiredWakeTime, displayedComponents: .hourAndMinute)
-                    .padding()
+                VStack {
+                    DatePicker("Start Date", selection: $startDate, displayedComponents: .date)
+                        .padding()
+                        .foregroundStyle(.blue)
+                        .font(.title2)
+                        .fontWeight(.bold)
+                    
+                    
+                    DatePicker("End Date", selection: $endDate, displayedComponents: .date)
+                        .padding()
+                        .foregroundStyle(.blue)
+                        .font(.title2)
+                        .fontWeight(.bold)
+                    
+                    // Time pickers for current and desired sleep times
+                    DatePicker("Current Sleep Time", selection: $currentSleepTime, displayedComponents: .hourAndMinute)
+                        .padding()
+                        .foregroundStyle(.red)
+                        .font(.title2)
+                        .fontWeight(.bold)
+                    
+                    DatePicker("Desired Sleep Time", selection: $desiredSleepTime, displayedComponents: .hourAndMinute)
+                        .padding()
+                        .foregroundStyle(.green)
+                        .font(.title2)
+                        .fontWeight(.bold)
+                    
+                    // Time pickers for current and desired wake times
+                    DatePicker("Current Wake Time", selection: $currentWakeTime, displayedComponents: .hourAndMinute)
+                        .padding()
+                        .foregroundStyle(.red)
+                        .font(.title2)
+                        .fontWeight(.bold)
+                    
+                    DatePicker("Desired Wake Time", selection: $desiredWakeTime, displayedComponents: .hourAndMinute)
+                        .padding()
+                        .foregroundStyle(.green)
+                        .font(.title2)
+                        .fontWeight(.bold)
+                    
+                }
                 
                 // Button to set progressive alarms
                 Button(action: {
@@ -54,9 +79,18 @@ struct ContentView: View {
                 }) {
                     Text("Set Progressive Alarms")
                 }
+                .font(.headline)
+                .foregroundColor(.white)
+                .frame(maxWidth: .infinity)
                 .padding()
+                .background(LinearGradient(gradient: Gradient(colors: [Color.blue, Color.green]), startPoint: .leading, endPoint: .trailing))
+                .cornerRadius(10)
+                .shadow(color: .gray, radius: 3, x: 0, y: 3)
+                .padding(.horizontal)
                 
-                
+                ///
+                ///
+                ///
                 
                 // Button to grant notification permission
                 Button(action: {
@@ -64,7 +98,15 @@ struct ContentView: View {
                 }) {
                     Text("Grant Permission for Notifications")
                 }
+                .font(.headline)
+                .foregroundColor(.white)
+                .frame(maxWidth: .infinity)
                 .padding()
+                .background(LinearGradient(gradient: Gradient(colors: [Color.blue, Color.green]), startPoint: .leading, endPoint: .trailing))
+                .cornerRadius(10)
+                .shadow(color: .gray, radius: 3, x: 0, y: 3)
+                .padding(.horizontal)
+                
                 
                 // Button to navigate to AlarmsView
                 NavigationLink(destination: AlarmsView(alarms: alarms),
@@ -72,7 +114,39 @@ struct ContentView: View {
                     EmptyView()
                 }
                 
+                ///
+                ///
+                ///
+                ///
                 
+                
+                ///
+                ///
+                ///
+                Button("Clear All Current Alarms") {
+                    showAlert = true
+                }
+                .font(.headline)
+                .foregroundColor(.white)
+                .frame(maxWidth: .infinity)
+                .padding()
+                .background(LinearGradient(gradient: Gradient(colors: [Color.red, Color.orange]), startPoint: .leading, endPoint: .trailing))
+                .cornerRadius(10)
+                .shadow(color: .gray, radius: 3, x: 0, y: 3)
+                .foregroundStyle(.red)
+                .padding(.horizontal)
+                .padding(.top,10)
+                .alert(isPresented: $showAlert) {
+                    Alert(title: Text("Alert"), message: Text("All of your current alarms will be cleared"), primaryButton: .default(Text("OK"), action: {
+                        alarms.removeAll()
+                        // Code to execute when "OK" is pressed
+                        print("OK button pressed")
+                    }), secondaryButton: .cancel(Text("Cancel")))
+                }
+                ///
+                ///
+                ///
+                ///
                 
             }.navigationTitle("Progressive Alarm")
         }
@@ -194,6 +268,7 @@ struct ContentView: View {
                 print("Error requesting notification permission: \(error.localizedDescription)")
             }
         }
+        
     }
 }
 
